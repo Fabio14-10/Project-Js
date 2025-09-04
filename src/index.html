@@ -87,17 +87,33 @@
     </div>
   </div>
 
-  <!-- Grid videos -->
-  <div class="bg-white">
-    <div class="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+<!-- Grid videos -->
+<div class="bg-white">
+  <div class="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+    <div class="flex items-end justify-between gap-6">
       <h2 class="text-2xl font-extrabold tracking-tight text-slate-900">
         Últimos videos de Norfarsalud
       </h2>
-      <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8" id="content">
-        <!-- content -->
-      </div>
+      <a
+        href="https://www.tiktok.com/@norfarsaludfarmacenter2"
+        target="_blank" rel="noopener"
+        class="text-sm font-semibold text-[#0d61a9] hover:underline"
+        aria-label="Ir al perfil de TikTok de Norfarsalud"
+      >
+        Ver perfil en TikTok →
+      </a>
+    </div>
+
+    <!-- Carrusel horizontal: 1 fila, tarjetas auto, scroll suave -->
+    <div
+      id="content"
+      class="mt-6 grid grid-flow-col auto-cols-[minmax(260px,1fr)] gap-6 overflow-x-auto pb-2 snap-x snap-mandatory
+             [scrollbar-width:thin] [scrollbar-color:#0d61a9_#e2e8f0]"
+    >
+      <!-- contenido dinámico por JS -->
     </div>
   </div>
+</div>
 
   <!-- CTA Contacto -->
   <div class="bg-slate-50">

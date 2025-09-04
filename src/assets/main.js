@@ -1,46 +1,61 @@
-const API = 'https://youtube-v31.p.rapidapi.com/search?relatedToVideoId=7ghhRHRP6t4&part=id%2Csnippet&type=video&maxResults=50';
-const content = null || document.getElementById('content')
-const options = {
-	method: 'GET',
-	headers: {
-		'x-rapidapi-key': '655ff6fb9cmsh9871bfa2a9e09d5p19139bjsnd6f39ba64e9a',
-		'x-rapidapi-host': 'youtube-v31.p.rapidapi.com'
-	}
-};
+const CONTENT = document.getElementById("content");
 
-async function fetchData (urlApi) {
-    const response = await fetch(urlApi, options)
-    const data = await response.json()
-    return data
+const videos = [
+  "https://www.tiktok.com/@norfarsaludfarmacenter2/video/7541033017226054968",
+  "https://www.tiktok.com/@norfarsaludfarmacenter2/video/7535094054900567302",
+  "https://www.tiktok.com/@norfarsaludfarmacenter2/video/7531486440237075718",
+  "https://www.tiktok.com/@norfarsaludfarmacenter2/video/7325064574460300549",
+  "https://www.tiktok.com/@norfarsaludfarmacenter2/video/7311392037893410054"
+];
+
+// Usa oEmbed de TikTok para obtener la portada
+async function fetchThumbnail(url) {
+  try {
+    const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
+    if (!res.ok) throw new Error("No se pudo cargar");
+    const data = await res.json();
+    return { cover: data.thumbnail_url, title: data.title, link: url };
+  } catch (e) {
+    console.error("Error:", e);
+    return { cover: "./assets/fallback.jpg", title: "Video TikTok", link: url };
+  }
 }
 
-//funcion que se invoca a si misma
-(async() => {
-    try {
-        const videos = await fetchData(API)
-        let view =  
-        `${videos.items.map(video => `<div class="group relative">
-          <div
-            class="w-full bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:aspect-none">
-            <img src="${video.snippet.thumbnails.high.url}" alt="${video.snippet.description}" class="w-full">
-          </div>
-          <div class="mt-4 flex justify-between">
-            <h3 class="text-sm text-gray-700">
-              <span aria-hidden="true" class="absolute inset-0"></span>
-              ${video.snippet.title}
-            </h3>
+async function renderVideos() {
+  CONTENT.innerHTML = "<p class='text-slate-500'>Cargando videos...</p>";
+
+  const items = await Promise.all(videos.map(v => fetchThumbnail(v)));
+
+  CONTENT.innerHTML = "";
+  items.forEach(v => {
+    const card = document.createElement("a");
+    card.href = v.link;
+    card.target = "_blank";
+    card.rel = "noopener";
+    card.className =
+      "snap-start group block rounded-2xl overflow-hidden ring-1 ring-slate-200 bg-white shadow-sm hover:shadow-md transition";
+
+    card.innerHTML = `
+      <div class="relative">
+        <img src="${v.cover}" alt="${v.title}"
+             class="aspect-[9/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]">
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30"></div>
+        <div class="absolute bottom-2 left-2 flex items-center gap-2">
+          <div class="grid place-items-center h-8 w-8 rounded-full bg-black/60">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M8 5v14l11-7z"></path></svg>
           </div>
         </div>
-      </div>`).slice(0, 4).join('')}`         // unir todos los elementos
-            content.innerHTML = view
-    } catch (error) {
-        console.log.error
-    }
-}) ()
-/*try {
-	const response = await fetch(url, options);
-	const result = await response.text();
-	console.log(result);
-} catch (error) {
-	console.error(error);
-}*/
+      </div>
+      <div class="p-2">
+        <p class="text-sm text-slate-800 font-medium leading-snug line-clamp-2">${v.title}</p>
+      </div>
+    `;
+    CONTENT.appendChild(card);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", renderVideos);
+
+
+
+
